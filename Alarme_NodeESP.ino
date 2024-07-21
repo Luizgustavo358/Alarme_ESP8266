@@ -4,20 +4,33 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-#define BTN_DIR  D5
-#define BTN_MEIO D6
-#define BTN_ESQ  D7
+// botoes
+#define BTN_LEFT  D3
+#define BTN_UP    D4
+#define BTN_DOWN  D5
+#define BTN_RIGHT D6
+#define BTN_OK    D7
+#define BTN_CANC  D8
 
+// configuracao do LCD
 int colunas = 16;
 int linhas  = 2;
 
-int btnDirState  = 0;
-int btnMeioState = 0;
-int btnEsqState  = 0;
+// estados dos botoes
+int btnLeftState  = 0;
+int btnUpState    = 0;
+int btnDownState  = 0;
+int btnRightState = 0;
+int btnOkState    = 0;
+int btnCancState  = 0;
 
-bool btnDirPressed = false;
-bool btnMeioPressed = false;
-bool btnEsqPressed = false;
+// botoes pressionados
+bool btnLeftPressed  = false;
+bool btnUpPressed    = false;
+bool btnDownPressed  = false;
+bool btnRightPressed = false;
+bool btnOkPressed    = false;
+bool btnCancPressed  = false;
 
 // NTP Server
 const char* NTP_SERVER = "pool.ntp.org";
@@ -60,9 +73,12 @@ void setup() {
   criaIcones();
 
   // inicializando os botoes
-  pinMode(BTN_ESQ,  INPUT);
-  pinMode(BTN_MEIO, INPUT);
-  pinMode(BTN_DIR,  INPUT);
+  pinMode(BTN_LEFT,  INPUT);
+  pinMode(BTN_UP,    INPUT);
+  pinMode(BTN_DOWN,  INPUT);
+  pinMode(BTN_RIGHT, INPUT);
+  pinMode(BTN_OK,    INPUT);
+  pinMode(BTN_CANC,  INPUT);
 
   // mostra a tela de data e hora
   if(timeStatus() != timeNotSet) {
@@ -71,39 +87,28 @@ void setup() {
 }
 
 void loop() {
-  // le o estado dos botoes
-  btnDirState  = digitalRead(BTN_DIR);
-  btnMeioState = digitalRead(BTN_MEIO);
-  btnEsqState  = digitalRead(BTN_ESQ);
+  lcd.noCursor();
 
-  if(btnEsqState == HIGH) {
-    btnDirPressed = false;
-    btnMeioPressed = false;
-    btnEsqPressed = true;
-  } else if(btnMeioState == HIGH) {
-    btnDirPressed = false;
-    btnMeioPressed = true;
-    btnEsqPressed = false;
-  } else if(btnDirState == HIGH) {
-    btnDirPressed = true;
-    btnMeioPressed = false;
-    btnEsqPressed = false;
+  // le o estado dos botoes
+  btnOkState   = digitalRead(BTN_OK);
+  btnCancState = digitalRead(BTN_CANC);
+
+  if(btnOkState == HIGH) {
+    btnOkPressed   = true;
+    btnCancPressed = false;
+  } else if(btnCancState == HIGH) {
+    btnOkPressed   = false;
+    btnCancPressed = true;
   }
 
-  if(btnEsqPressed) {
+  if(btnOkPressed) {
     // horario e data
     if(timeStatus() != timeNotSet) {
       telaPrincipal();
     }
-  } else if(btnMeioPressed) {
+  } else if(btnCancPressed) {
     // alarme
     telaAlarme();
-  } else if(btnDirPressed) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("IP:");
-    lcd.setCursor(0, 1);
-    lcd.print(WiFi.localIP());
   } else {
     // horario e data
     if(timeStatus() != timeNotSet) {
