@@ -5,12 +5,12 @@
 #include <LiquidCrystal_I2C.h>
 
 // botoes
-#define BTN_LEFT  D3
-#define BTN_UP    D4
-#define BTN_DOWN  D5
-#define BTN_RIGHT D6
-#define BTN_OK    D7
-#define BTN_CANC  D8
+#define BTN_LEFT  0  // D3
+#define BTN_UP    2  // D4
+#define BTN_DOWN  14 // D5
+#define BTN_RIGHT 12 // D6
+#define BTN_OK    13 // D7
+#define BTN_CANC  15 // D8
 
 // configuracao do LCD
 int colunas = 16;
